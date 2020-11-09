@@ -31,13 +31,7 @@ Apex is a strongly typed object oriented programming language
   
   Class is a collection of data members and methods.
   
-```
-git status
-git add
-git commit
-```
-
-  
+ 
  Eg :  
  ```
  class Student{
@@ -63,6 +57,27 @@ git commit
     }
   }
   ```
+  ## Access modifiers
+  To specify an Apex class one can use the following access modifiers
+  
+  1. You must use the acess modifier for top level class
+  - Public
+  - Global
+  2. You do not have to use access modifier for the inner level classes.
+  3. Optional access modifiers are Virtual and Abstract.
+  4. Required : Keyword class is required followed by classname.
+  5. And/OR implementation.
+  
+  Syntax
+  ``` 
+  Private|Public|Global[ Virtual|Abstract|With Sharing|(none)]
+  class classname implements[interfacename|(none)] extends [classname|(none)]
+  {
+    //body of the class
+  }
+  ``` 
+  
+  
   
   
   
