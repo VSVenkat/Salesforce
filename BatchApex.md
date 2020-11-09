@@ -14,17 +14,25 @@ To implement the Batch Apex concept Apex class must implement the Database.Batch
 
 1. Database.Batchable interface consists of 3 methods that must be implemented
 
--Start method
--Execute method
--Finish method
+- Start method
+- Execute method
+- Finish method
 
 2. Start Method : 
--Start method is automatically called at the begining of the Batch Apex Job.
--It will collect the records or objects on which the operation has to be performed.
--These records are divided into sub tasks and given to execute method.
+- Start method is automatically called at the begining of the Batch Apex Job.
+- It will collect the records or objects on which the operation has to be performed.
+- These records are divided into sub tasks and given to execute method.
 
 Syntax : 
-
+```
+global(Database.QueryLocator|Iterable<SObject>) start(Database.BatchableContext bd){}
+ ```
+ 3. The return type of start method can be
+ 
+ - Database.QueryLocator OR
+ - Iterable<SObject>
+  
+ 
 
 
 
