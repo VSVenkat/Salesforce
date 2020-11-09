@@ -31,18 +31,19 @@ Apex is a strongly typed object oriented programming language
   
   Class is a collection of data members and methods.
   
- Eg :  class Student{
+ Eg :  
+ 
+ class Student{
     Integer no;
     String name;
-    
-    public void getDetails(){
+     public void getDetails(){
       System.debug("Roll no. : "+no);
       System.debug("Student name :"+name);
     }
+   }
   
-  }
+  Eg 2:
   
-  Eg 2: 
   class Employee{
     Integer exp;
     String department;
