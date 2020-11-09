@@ -31,8 +31,15 @@ Apex is a strongly typed object oriented programming language
   
   Class is a collection of data members and methods.
   
+```
+git status
+git add
+git commit
+```
+
+  
  Eg :  
- 
+ ```
  class Student{
     Integer no;
     String name;
@@ -41,9 +48,10 @@ Apex is a strongly typed object oriented programming language
       System.debug("Student name :"+name);
     }
    }
-  
+ ```
+ 
   Eg 2:
-  
+ ``` 
   class Employee{
     Integer exp;
     String department;
@@ -54,7 +62,7 @@ Apex is a strongly typed object oriented programming language
             
     }
   }
-  
+  ```
   
   
   
