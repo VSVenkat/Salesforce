@@ -27,6 +27,35 @@ Apex is a strongly typed object oriented programming language
   
   Polymorphism : Representing one form in multiple forms is called polymorphism.
   
+  #Class :
+  
+  Class is a collection of data members and methods.
+  
+ Eg :  class Student{
+    Integer no;
+    String name;
+    
+    public void getDetails(){
+      System.debug("Roll no. : "+no);
+      System.debug("Student name :"+name);
+    }
+  
+  }
+  
+  Eg 2: 
+  class Employee{
+    Integer exp;
+    String department;
+    
+    public void show(){
+      logic...
+      .....
+            
+    }
+  }
+  
+  
+  
   
   
   
