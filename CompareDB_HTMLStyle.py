@@ -21,8 +21,12 @@ def compare_with_excel(database_df, excel_file):
 
 # Function to save differences in HTML format
 def save_differences_as_html(differences, output_file):
-    # Styler to highlight the differences
-    styled_differences = differences.style.highlight_diff()
+    # Styler to manually highlight differences
+    def highlight_diff(value):
+        return 'background-color: yellow' if value else ''
+
+    # Apply the style to the dataframe
+    styled_differences = differences.style.applymap(highlight_diff)
 
     # Save the styled differences to an HTML file
     styled_differences.to_html(output_file, render_links=True, escape=False)
