@@ -1,0 +1,37 @@
+import pandas as pd
+from openpyxl import Workbook
+from openpyxl.styles import PatternFill
+
+def compare_and_highlight(file1, file2, output_file):
+    # Load Excel files into DataFrames
+    df1 = pd.read_excel(file1)
+    df2 = pd.read_excel(file2)
+
+    # Check if the structure of both DataFrames is the same
+    if df1.shape != df2.shape or not df1.columns.equals(df2.columns):
+        print("The structure of the Excel sheets is not the same.")
+        return
+
+    # Create a new workbook for the output
+    workbook = Workbook()
+    sheet = workbook.active
+
+    # Compare cell values and highlight the differences
+    for row in range(1, df1.shape[0] + 1):
+        for col in range(1, df1.shape[1] + 1):
+            value1 = df1.iloc[row - 1, col - 1]
+            value2 = df2.iloc[row - 1, col - 1]
+
+            if value1 != value2:
+                cell = sheet.cell(row=row, column=col)
+                cell.value = value1
+                cell.fill = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+
+    # Save the output to a new Excel file
+    workbook.save(output_file)
+
+# Example usage
+excel_file1 = "path/to/excel1.xlsx"
+excel_file2 = "path/to/excel2.xlsx"
+output_excel_file = "path/to/output_diff.xlsx"
+compare_and_highlight(excel_file1, excel_file2, output_excel_file)
