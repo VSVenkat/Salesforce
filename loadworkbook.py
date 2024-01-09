@@ -25,3 +25,24 @@ for sheet_name in workbook.sheetnames:
 new_workbook.save(new_excel_file_path)
 
 print(f'Excel file saved as: {new_excel_file_path}')
+
+
+
+import openpyxl
+
+# Load the workbook
+workbook = openpyxl.load_workbook('your_excel_file.xlsx')
+
+# Iterate through all sheets in the workbook
+for sheet in workbook.sheetnames:
+    # Get the active sheet
+    current_sheet = workbook[sheet]
+
+    # Recalculate all formulas in the sheet
+    for row in current_sheet:
+        for cell in row:
+            if cell.formula:
+                cell.value = cell.calculate_value()
+
+# Save the workbook
+workbook.save('your_updated_excel_file.xlsx')
