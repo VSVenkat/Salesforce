@@ -39,6 +39,8 @@ public class AttachmentUtility
         catch (WebException ex)
         {
             Console.WriteLine($"Failed to download attachment. Error: {ex.Message}");
+            string credentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", "<PAT>")));
+client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
         }
     }
 }
