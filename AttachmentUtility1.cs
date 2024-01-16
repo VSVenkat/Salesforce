@@ -13,7 +13,7 @@ public class AttachmentUtility
 
     public static void DownloadAttachment(int testCaseId)
     {
-        string testCaseUrl = $"https://dev.azure.com/{organization}/{projectName}/_apis/testplan/testcases/{testCaseId}?api-version=6.0";
+        string testCaseUrl = $"string testCaseUrl = $"https://dev.azure.com/{organization}/{projectName}/_apis/testplan/testcases/{testCaseId}?api-version=6.0";
 
         try
         {
