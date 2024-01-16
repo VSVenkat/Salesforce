@@ -14,6 +14,7 @@ public class AttachmentUtility
     public static void DownloadAttachment(int testCaseId)
     {
         string testCaseUrl = $"string testCaseUrl = $"https://dev.azure.com/{organization}/{projectName}/_apis/testplan/testcases/{testCaseId}?api-version=6.0";
+        GET https://dev.azure.com/{organization}/{project}/_apis/testplan/Plans/{planId}/Suites/{suiteId}/TestCase/{testCaseId}?api-version=7.1-preview.3
 
         try
         {
