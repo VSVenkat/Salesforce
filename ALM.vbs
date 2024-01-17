@@ -57,3 +57,6 @@ Else
     WScript.Echo "Failed to connect to ALM."
 End If
 https://github.com/CourseRepository/SeleniumWebDriverWithCSharp/tree/master
+
+GET https://dev.azure.com/{organization}/{project}/_apis/test/Runs/{runId}/attachments?api-version=7.1-preview.1
+
