@@ -1,88 +1,16 @@
-# Salesforce
 
-#Apex
+# BDD with Selenium Webdriver and Specflow using C# 
 
-Apex is a strongly typed object oriented programming language
+Selenium WebDriver using CSharp as language binding
 
-1. It allows developers to execute flows and transactional control statements
-2. Apex language is
-  1. Integrated: It provides built in support for DML calls.
-  2. Inline salesforce object query language - SOQL
-  3. Easy to use.
-  4. Esay to test
-  5. Version
-  6. Multitenant architecture
-  
-  #Object Oriented Programming
-  
-  The main features of Object Oriented Programming are
-  
-  1. Encapsulation
-  2. Inheritance
-  3. Polymorphism
-  
-  Encapsulation : The wrapping up of data members and methods together is called as Encapsulation. For example, if we take a class we put data and methods inside the class, so the class is binding them together in a single class. So class is an example of Encapsulation.
-  
-  Inheritance : It allows to inherit the features from one class to other class . The class which aquires the features are called derived class and class which provides the features to the derived class is called Base class/Super class. The process to inheriting the features(data members and data methods from Parent class to child class is called Inheritance.
-  
-  Polymorphism : Representing one form in multiple forms is called polymorphism.
-  
-  #Class :
-  
-  Class is a collection of data members and methods.
-  
- 
- Eg :  
- ```
- class Student{
-    Integer no;
-    String name;
-     public void getDetails(){
-      System.debug("Roll no. : "+no);
-      System.debug("Student name :"+name);
-    }
-   }
- ```
- 
-  Eg 2:
- ``` 
-  class Employee{
-    Integer exp;
-    String department;
-    
-    public void show(){
-      logic...
-      .....
-            
-    }
-  }
-  ```
-  ## Access modifiers
-  To specify an Apex class one can use the following access modifiers
-  
-  1. You must use the acess modifier for top level class
-  - Public
-  - Global
-  2. You do not have to use access modifier for the inner level classes.
-  3. Optional access modifiers are Virtual and Abstract.
-  4. Required : Keyword class is required followed by classname.
-  5. And/OR implementation.
-  
-  Syntax
-  ``` 
-  Private|Public|Global[ Virtual|Abstract|With Sharing|(none)]
-  class classname implements[interfacename|(none)] extends [classname|(none)]
-  {
-    //body of the class
-  }
-  ``` 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+## Course Link (Discount Coupon)
+
+https://www.udemy.com/course/bdd-with-selenium-webdriver-and-speckflow-using-c/?couponCode=21PERCENTOFF
+
+## YouTube Playlist
+
+* Selenium Webdriver with C# https://www.youtube.com/playlist?list=PLlsKgYi2Lw724ozNSmdSrrtU8q6a1m3ob
+
+* Rest API Testing using RestSharp in C# https://www.youtube.com/playlist?list=PLlsKgYi2Lw73ox9LF5VfYMrA1eo9e7rIq
+
+* API Testing Using C# Http Client https://www.youtube.com/playlist?list=PLlsKgYi2Lw722PMqESdivKJQgRtJAdbzn
