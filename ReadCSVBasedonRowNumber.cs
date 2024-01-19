@@ -31,21 +31,16 @@ class Program
                 parser.TextFieldType = FieldType.Delimited;
                 parser.SetDelimiters(",");
 
-                // Read and skip rows until reaching the target row
-                for (int i = 1; i < rowNumber; i++)
+                // Read rows until reaching the target row
+                while (!parser.EndOfData && parser.LineNumber < rowNumber)
                 {
-                    if (parser.EndOfData)
-                    {
-                        Console.WriteLine($"Error: CSV file has fewer rows than {rowNumber}.");
-                        return null;
-                    }
-
                     parser.ReadLine();
                 }
 
-                // Read the target row
-                if (!parser.EndOfData)
+                // Check if the parser is positioned correctly
+                if (parser.LineNumber == rowNumber)
                 {
+                    // Read the target row
                     string[] headers = parser.ReadFields();
 
                     // Find the index of the target header
@@ -65,9 +60,11 @@ class Program
                         return null;
                     }
                 }
-
-                Console.WriteLine($"Error: CSV file has fewer rows than {rowNumber}.");
-                return null;
+                else
+                {
+                    Console.WriteLine($"Error: CSV file has fewer rows than {rowNumber}.");
+                    return null;
+                }
             }
         }
         catch (Exception ex)
