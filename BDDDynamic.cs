@@ -1,3 +1,13 @@
+Feature: My Feature
+
+  Scenario Outline: Perform Action with Different Usernames
+    Given I have the username "<Username>"
+    When I perform a specific action "<Action>"
+    And I enter "<Password>"
+    Then I should see the expected result
+
+    Examples: dynamic
+
 using System;
 using System.Collections.Generic;
 using System.IO;
