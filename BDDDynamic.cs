@@ -189,3 +189,27 @@ public class YourStepDefinitions
         System.IO.File.WriteAllLines(featureFile, lines);
     }
 }
+==================================================================
+
+  private static string GetFeatureFilePath(string featureName)
+{
+    string startupPath = Environment.CurrentDirectory; 
+    var splitStartupPath = startupPath.Split(new[] {"\\"}, StringSplitOptions.None);
+
+    var featureFolder = splitStartupPath[0] + @"\\" + 
+                        splitStartupPath[1] + @"\\" + 
+                        splitStartupPath[2] + @"\\" +
+                        splitStartupPath[3] + @"\\" +
+                        splitStartupPath[4] + @"\\" + 
+                        splitStartupPath[5] + @"\\Features\";
+
+    var dir = new DirectoryInfo(featureFolder);
+
+    foreach (var fi in dir.GetFiles())
+    {
+        if (fi.FullName.Contains(featureName))
+            return fi.FullName;
+    }
+
+    return "No Feature File Found With Title: " + featureName;
+}
