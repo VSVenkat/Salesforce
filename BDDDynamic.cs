@@ -111,6 +111,81 @@ public class MySteps
             }
         }
 
+      ===============================
+
+        using System;
+using System.IO;
+using System.Reflection;
+using TechTalk.SpecFlow;
+
+[Binding]
+public class YourStepDefinitions
+{
+    [Given("I read the content of the feature file")]
+    public void GivenIReadTheContentOfTheFeatureFile()
+    {
+        // Access the current FeatureContext
+        var featureContext = FeatureContext.Current;
+
+        // Use reflection to get the private 'featureContext' field from the ScenarioContext
+        FieldInfo featureContextField = typeof(FeatureContext).GetField("featureContext", BindingFlags.NonPublic | BindingFlags.Instance);
+
+        // Check if the field is found
+        if (featureContextField != null)
+        {
+            // Get the value of the 'featureContext' field
+            var context = featureContextField.GetValue(featureContext);
+
+            // Use reflection to get the private 'featureFilePath' field from the FeatureContext
+            FieldInfo featureFilePathField = context.GetType().GetField("featureFilePath", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            // Check if the field is found
+            if (featureFilePathField != null)
+            {
+                // Get the value of the 'featureFilePath' field
+                string featureFilePath = featureFilePathField.GetValue(context) as string;
+
+                if (!string.IsNullOrEmpty(featureFilePath))
+                {
+                    // Read the content of the feature file
+                    string featureFileContent = ReadFeatureFileContent(featureFilePath);
+
+                    // Display the content (you can perform further processing with the content)
+                    Console.WriteLine($"Content of the feature file:\n{featureFileContent}");
+                }
+                else
+                {
+                    Console.WriteLine("Error: Feature file path is empty or null.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error: Could not find the 'featureFilePath' field in FeatureContext.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Error: Could not find the 'featureContext' field in FeatureContext.");
+        }
+    }
+
+    private string ReadFeatureFileContent(string filePath)
+    {
+        // Implement your logic to read the content of the feature file
+        // For example, you can use System.IO.File.ReadAllText
+        try
+        {
+            return System.IO.File.ReadAllText(filePath);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error reading feature file: {ex.Message}");
+            return null;
+        }
+    }
+}
+
+
         System.IO.File.WriteAllLines(featureFile, lines);
     }
 }
