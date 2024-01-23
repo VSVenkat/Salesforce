@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public class ActionAttribute : Attribute
@@ -27,9 +28,11 @@ public class StepDefinitions
     // Other step definition methods
 }
 
-class Program
+[TestClass]
+public class TestExecutor
 {
-    static void Main()
+    [TestMethod]
+    public void ExecuteTest()
     {
         // Load XML file
         XDocument doc = XDocument.Load("Path\\To\\Your\\TestCases.xml");
