@@ -83,7 +83,19 @@ public class TestExecutor
 
         return null;
     }
+static object[] ExtractParametersFromExcel(string excelFilePath, MethodInfo methodInfo)
+    {
+        // Assuming the parameter is always a single string
+        // You may need more sophisticated parsing based on your requirements
 
+        // Read Excel file using EPPlus
+        using (var package = new ExcelPackage(new System.IO.FileInfo(excelFilePath)))
+        {
+            var worksheet = package.Workbook.Worksheets[0]; // Assuming data is in the first sheet
+            var parameterValue = worksheet.Cells[1, 1].Text; // Assuming the parameter value is in the first cell
+            return new object[] { parameterValue };
+        }
+    }
     static bool IsStepMatch(string step, string pattern)
     {
         // Implement your matching logic here
