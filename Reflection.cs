@@ -57,7 +57,7 @@ public class TestExecutor
         if (methodInfo != null)
         {
             // Extract parameters from the step (you may need more sophisticated parsing)
-            object[] parameters = { /* Extract parameters from step */ };
+            var parameters = ExtractParametersFromExcel("path-to-your-excel-file.xlsx", methodInfo);
 
             // Invoke the method
             methodInfo.Invoke(stepDefinitions, parameters);
