@@ -33,11 +33,17 @@ public class DatabaseTests
 
                     if (excelRow != null)
                     {
-                        // Define fields to compare
-                        List<string> fieldsToCompare = new List<string> { "Name", "Occupation", "Address" };
+                        // Define mapping between Excel field names and SQL field names
+                        Dictionary<string, string> fieldMapping = new Dictionary<string, string>
+                        {
+                            {"ExcelFieldName1", "SqlFieldName1"},
+                            {"ExcelFieldName2", "SqlFieldName2"},
+                            {"ExcelFieldName3", "SqlFieldName3"},
+                            // Add more mappings as needed
+                        };
 
                         // Process the SQL and Excel row data
-                        ProcessRowData(idFromSql, reader, excelRow, fieldsToCompare);
+                        ProcessRowData(idFromSql, reader, excelRow, fieldMapping);
                     }
                     else
                     {
@@ -67,9 +73,10 @@ public class DatabaseTests
                         // Store Excel row values in a dictionary
                         Dictionary<string, string> rowData = new Dictionary<string, string>();
                         rowData["ID"] = dataTable.Rows[i][0]?.ToString() ?? string.Empty;
-                        rowData["Name"] = dataTable.Rows[i][1]?.ToString() ?? string.Empty;
-                        rowData["Occupation"] = dataTable.Rows[i][2]?.ToString() ?? string.Empty;
-                        rowData["Address"] = dataTable.Rows[i][3]?.ToString() ?? string.Empty;
+                        rowData["ExcelFieldName1"] = dataTable.Rows[i][1]?.ToString() ?? string.Empty;
+                        rowData["ExcelFieldName2"] = dataTable.Rows[i][2]?.ToString() ?? string.Empty;
+                        rowData["ExcelFieldName3"] = dataTable.Rows[i][3]?.ToString() ?? string.Empty;
+                        // Add more fields as needed
                         return rowData;
                     }
                 }
@@ -78,22 +85,25 @@ public class DatabaseTests
         return null;
     }
 
-    private void ProcessRowData(string idFromSql, SqlDataReader sqlReader, Dictionary<string, string> excelRow, List<string> fieldsToCompare)
+    private void ProcessRowData(string idFromSql, SqlDataReader sqlReader, Dictionary<string, string> excelRow, Dictionary<string, string> fieldMapping)
     {
         bool allFieldsMatch = true;
 
-        foreach (string field in fieldsToCompare)
+        foreach (var mapping in fieldMapping)
         {
+            string excelField = mapping.Key;
+            string sqlField = mapping.Value;
+
             // Access and process values from the SQL result set
-            string valueFromSql = sqlReader[field].ToString();
+            string valueFromSql = sqlReader[sqlField].ToString();
 
             // Access and process values from the Excel row
-            string valueFromExcel = excelRow[field];
+            string valueFromExcel = excelRow[excelField];
 
             // Compare the values
             if (valueFromSql != valueFromExcel)
             {
-                Console.WriteLine($"Value mismatch for ID: {idFromSql}, Field: {field}");
+                Console.WriteLine($"Value mismatch for ID: {idFromSql}, Field: {excelField}");
                 allFieldsMatch = false;
             }
         }
