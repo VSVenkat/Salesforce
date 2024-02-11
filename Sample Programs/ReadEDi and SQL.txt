@@ -1,0 +1,111 @@
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+
+class MemberData
+{
+    public string MemberName { get; set; }
+    public string Address { get; set; }
+    public string City { get; set; }
+    public string State { get; set; }
+    public string DateOfBirth { get; set; }
+    public string InsurancePlan { get; set; }
+    public string ReferenceNumber { get; set; }
+    public DateTime EnrollmentDate { get; set; }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        List<MemberData> ediMembers = GetMembersFromEDIFile();
+        List<MemberData> dbMembers = GetMembersFromDatabase();
+
+        if (ediMembers.Count != dbMembers.Count)
+        {
+            Console.WriteLine("The number of members in the EDI file and the database table do not match.");
+            return;
+        }
+
+        for (int i = 0; i < ediMembers.Count; i++)
+        {
+            if (!CompareMembers(ediMembers[i], dbMembers[i]))
+            {
+                Console.WriteLine("Member details mismatch:");
+                Console.WriteLine($"EDI Member {i + 1}: {GetMemberDetailsString(ediMembers[i])}");
+                Console.WriteLine($"DB Member {i + 1}: {GetMemberDetailsString(dbMembers[i])}");
+            }
+        }
+
+        Console.WriteLine("Comparison complete.");
+    }
+
+    static List<MemberData> GetMembersFromEDIFile()
+    {
+        // Read members from EDI file and return a list of MemberData objects
+        // Sample implementation
+        return new List<MemberData>();
+    }
+
+    static List<MemberData> GetMembersFromDatabase()
+    {
+        string connectionString = "your_connection_string"; // Update with your connection string
+        List<MemberData> members = new List<MemberData>();
+
+        try
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "SELECT MemberName, Address, City, State, DateOfBirth, InsurancePlan, ReferenceNumber, EnrollmentDate FROM YourTableName"; // Update with your table name
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    MemberData member = new MemberData
+                    {
+                        MemberName = reader["MemberName"].ToString(),
+                        Address = reader["Address"].ToString(),
+                        City = reader["City"].ToString(),
+                        State = reader["State"].ToString(),
+                        DateOfBirth = reader["DateOfBirth"].ToString(),
+                        InsurancePlan = reader["InsurancePlan"].ToString(),
+                        ReferenceNumber = reader["ReferenceNumber"].ToString(),
+                        EnrollmentDate = Convert.ToDateTime(reader["EnrollmentDate"])
+                    };
+
+                    members.Add(member);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("An error occurred while fetching data from the database: " + ex.Message);
+        }
+
+        return members;
+    }
+
+    static bool CompareMembers(MemberData member1, MemberData member2)
+    {
+        // Compare member details and return true if they match, false otherwise
+        // Sample implementation
+        return member1.MemberName == member2.MemberName &&
+               member1.Address == member2.Address &&
+               member1.City == member2.City &&
+               member1.State == member2.State &&
+               member1.DateOfBirth == member2.DateOfBirth &&
+               member1.InsurancePlan == member2.InsurancePlan &&
+               member1.ReferenceNumber == member2.ReferenceNumber &&
+               member1.EnrollmentDate == member2.EnrollmentDate;
+    }
+
+    static string GetMemberDetailsString(MemberData member)
+    {
+        return $"Name: {member.MemberName}, Address: {member.Address}, City: {member.City}, State: {member.State}, DOB: {member.DateOfBirth}, Insurance Plan: {member.InsurancePlan}, Ref No: {member.ReferenceNumber}, Enrollment Date: {member.EnrollmentDate}";
+    }
+}
