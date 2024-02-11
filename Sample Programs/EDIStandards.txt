@@ -1,0 +1,35 @@
+ISA*00*          *00*          *ZZ*SENDERID       *ZZ*RECEIVERID     *190101*1253*^*00501*000000123*0*T*:~
+GS*HR*SENDERID*RECEIVERID*20200101*1253*123*X*005010X222A1~
+ST*834*1234~
+BGN*00*1234*20200101*1253000*PT~
+N1*P5*INSURERNAME*FI*123456789~
+N1*IN*SENDERNAME*FI*987654321~
+PER*IC*CONTACTNAME*TE*123-456-7890*FX*123-456-7899~
+N1*IV*MEMBERNAME*FI*123456789~
+N3*123 MAIN ST~
+N4*ANYTOWN*NY*12345~
+DMG*D8*19500101*F~
+INS*Y*18*030*XN*A***FT****N~
+REF*0F*123456~
+DTP*356*D8*20200101~
+SE*13*1234~
+GE*1*123~
+IEA*1*000000123~
+
+This sample EDI 837 file is structured as follows:
+
+ISA: Interchange Control Header
+GS: Functional Group Header
+ST: Transaction Set Header
+BGN: Beginning of Transaction
+N1: Name
+PER: Administrative Communications Contact
+N3: Address Information
+N4: Geographic Location
+DMG: Demographic Information
+INS: Insured Benefit
+REF: Reference Identification
+DTP: Date or Time or Period
+SE: Transaction Set Trailer
+GE: Functional Group Trailer
+IEA: Interchange Control Trailer
