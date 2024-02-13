@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Indices.Edi;
 using Indices.Edi.Utilities;
 
 class Program
@@ -19,85 +18,79 @@ class Program
         List<DtpDetail> dtpList = new List<DtpDetail>();
         List<DbgDetail> dbgList = new List<DbgDetail>();
 
-        // Load the EDI file
-        var ediFile = EdiFile.Load(new FileInfo(ediFilePath), new EdiOptions { ReadAhead = true });
+        // Read all lines from the EDI file
+        var ediLines = File.ReadAllLines(ediFilePath);
 
-        // Process each transaction in the EDI file
-        foreach (var transaction in ediFile.Transactions)
+        // Process each line of the EDI file
+        foreach (var ediLine in ediLines)
         {
-            string memberId = string.Empty;
-            string firstName = string.Empty;
-            string lastName = string.Empty;
+            // Split the line into segments
+            var segments = ediLine.Split('*');
 
-            foreach (var segment in transaction.Segments)
+            // Get segment identifier
+            var segmentIdentifier = segments.FirstOrDefault();
+
+            // Process segment based on its identifier
+            switch (segmentIdentifier)
             {
-                // Get segment data elements
-                var elements = segment.Elements;
-
-                switch (segment.Identifier)
-                {
-                    case "NM1":
-                        memberId = elements.ElementAtOrDefault(9)?.Value;
-                        firstName = elements.ElementAtOrDefault(3)?.Value;
-                        lastName = elements.ElementAtOrDefault(4)?.Value;
-                        break;
-                    case "IL":
+                case "NM1":
+                    // Process NM1 segment
+                    var memberId = segments.ElementAtOrDefault(9);
+                    var firstName = segments.ElementAtOrDefault(3);
+                    var lastName = segments.ElementAtOrDefault(4);
+                    
+                    // Determine if it's an individual or organization segment
+                    var entityIdentifierCode = segments.ElementAtOrDefault(1);
+                    if (entityIdentifierCode == "IL")
+                    {
                         // Create member detail object and add to collection
                         members.Add(new MemberDetail
                         {
                             MemberId = memberId,
                             FirstName = firstName,
                             LastName = lastName,
-                            Address = elements.ElementAtOrDefault(6)?.Value
+                            Address = segments.ElementAtOrDefault(6)
                         });
-                        break;
-                    case "Names":
+                    }
+                    else if (entityIdentifierCode == "Names")
+                    {
                         // Create organization detail object and add to collection
                         organizations.Add(new OrganizationDetail
                         {
                             MemberId = memberId,
                             FirstName = firstName,
                             LastName = lastName,
-                            OrganizationName = elements.ElementAtOrDefault(3)?.Value,
-                            OrganizationId = elements.ElementAtOrDefault(9)?.Value,
-                            Address = elements.ElementAtOrDefault(6)?.Value
+                            OrganizationName = segments.ElementAtOrDefault(3),
+                            OrganizationId = segments.ElementAtOrDefault(9),
+                            Address = segments.ElementAtOrDefault(6)
                         });
-                        break;
-                    case "INS":
-                        // Create INS detail object and add to collection
-                        insList.Add(new InsDetail
-                        {
-                            MemberId = memberId,
-                            FirstName = firstName,
-                            LastName = lastName,
-                            Indicator = elements.ElementAtOrDefault(1)?.Value,
-                            Code = elements.ElementAtOrDefault(2)?.Value,
-                            Description = elements.ElementAtOrDefault(3)?.Value
-                        });
-                        break;
-                    case "DTP":
-                        // Create DTP detail object and add to collection
-                        dtpList.Add(new DtpDetail
-                        {
-                            MemberId = memberId,
-                            FirstName = firstName,
-                            LastName = lastName,
-                            DateQualifier = elements.ElementAtOrDefault(1)?.Value,
-                            Date = elements.ElementAtOrDefault(2)?.Value
-                        });
-                        break;
-                    case "DBG":
-                        // Create DBG detail object and add to collection
-                        dbgList.Add(new DbgDetail
-                        {
-                            MemberId = memberId,
-                            FirstName = firstName,
-                            LastName = lastName,
-                            Code = elements.ElementAtOrDefault(0)?.Value,
-                            Description = elements.ElementAtOrDefault(1)?.Value
-                        });
-                        break;
-                }
+                    }
+                    break;
+                case "INS":
+                    // Process INS segment
+                    insList.Add(new InsDetail
+                    {
+                        Indicator = segments.ElementAtOrDefault(1),
+                        Code = segments.ElementAtOrDefault(2),
+                        Description = segments.ElementAtOrDefault(3)
+                    });
+                    break;
+                case "DTP":
+                    // Process DTP segment
+                    dtpList.Add(new DtpDetail
+                    {
+                        DateQualifier = segments.ElementAtOrDefault(1),
+                        Date = segments.ElementAtOrDefault(2)
+                    });
+                    break;
+                case "DBG":
+                    // Process DBG segment
+                    dbgList.Add(new DbgDetail
+                    {
+                        Code = segments.ElementAtOrDefault(0),
+                        Description = segments.ElementAtOrDefault(1)
+                    });
+                    break;
             }
         }
 
@@ -119,21 +112,21 @@ class Program
         Console.WriteLine("\nINS Details:");
         foreach (var insDetail in insList)
         {
-            Console.WriteLine($"Member ID: {insDetail.MemberId}, First Name: {insDetail.FirstName}, Last Name: {insDetail.LastName}, Indicator: {insDetail.Indicator}, Code: {insDetail.Code}, Description: {insDetail.Description}");
+            Console.WriteLine($"Indicator: {insDetail.Indicator}, Code: {insDetail.Code}, Description: {insDetail.Description}");
         }
 
         // Print DTP details
         Console.WriteLine("\nDTP Details:");
         foreach (var dtpDetail in dtpList)
         {
-            Console.WriteLine($"Member ID: {dtpDetail.MemberId}, First Name: {dtpDetail.FirstName}, Last Name: {dtpDetail.LastName}, Date Qualifier: {dtpDetail.DateQualifier}, Date: {dtpDetail.Date}");
+            Console.WriteLine($"Date Qualifier: {dtpDetail.DateQualifier}, Date: {dtpDetail.Date}");
         }
 
         // Print DBG details
         Console.WriteLine("\nDBG Details:");
         foreach (var dbgDetail in dbgList)
         {
-            Console.WriteLine($"Member ID: {dbgDetail.MemberId}, First Name: {dbgDetail.FirstName}, Last Name: {dbgDetail.LastName}, Code: {dbgDetail.Code}, Description: {dbgDetail.Description}");
+            Console.WriteLine($"Code: {dbgDetail.Code}, Description: {dbgDetail.Description}");
         }
     }
 }
@@ -159,9 +152,6 @@ public class OrganizationDetail
 
 public class InsDetail
 {
-    public string MemberId { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
     public string Indicator { get; set; }
     public string Code { get; set; }
     public string Description { get; set; }
@@ -169,18 +159,12 @@ public class InsDetail
 
 public class DtpDetail
 {
-    public string MemberId { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
     public string DateQualifier { get; set; }
     public string Date { get; set; }
 }
 
 public class DbgDetail
 {
-    public string MemberId { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
     public string Code { get; set; }
     public string Description { get; set; }
 }
