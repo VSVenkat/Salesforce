@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Indices.Edi;
 using Indices.Edi.Utilities;
 
 class Program
@@ -48,8 +49,7 @@ class Program
                         {
                             MemberId = memberId,
                             FirstName = firstName,
-                            LastName = lastName,
-                            Address = segments.ElementAtOrDefault(6)
+                            LastName = lastName
                         });
                     }
                     else if (entityIdentifierCode == "Names")
@@ -61,9 +61,40 @@ class Program
                             FirstName = firstName,
                             LastName = lastName,
                             OrganizationName = segments.ElementAtOrDefault(3),
-                            OrganizationId = segments.ElementAtOrDefault(9),
-                            Address = segments.ElementAtOrDefault(6)
+                            OrganizationId = segments.ElementAtOrDefault(9)
                         });
+                    }
+                    break;
+                case "N3":
+                    // Process N3 segment (Address Line 1)
+                    var addressLine1 = segments.ElementAtOrDefault(1);
+                    // Update the last member or organization detail with address line 1
+                    if (members.Any())
+                    {
+                        members.Last().AddressLine1 = addressLine1;
+                    }
+                    else if (organizations.Any())
+                    {
+                        organizations.Last().AddressLine1 = addressLine1;
+                    }
+                    break;
+                case "N4":
+                    // Process N4 segment (City, State, ZIP)
+                    var city = segments.ElementAtOrDefault(1);
+                    var state = segments.ElementAtOrDefault(2);
+                    var zip = segments.ElementAtOrDefault(3);
+                    // Update the last member or organization detail with city, state, and ZIP
+                    if (members.Any())
+                    {
+                        members.Last().City = city;
+                        members.Last().State = state;
+                        members.Last().ZIP = zip;
+                    }
+                    else if (organizations.Any())
+                    {
+                        organizations.Last().City = city;
+                        organizations.Last().State = state;
+                        organizations.Last().ZIP = zip;
                     }
                     break;
                 case "INS":
@@ -98,14 +129,14 @@ class Program
         Console.WriteLine("Members:");
         foreach (var member in members)
         {
-            Console.WriteLine($"Member ID: {member.MemberId}, First Name: {member.FirstName}, Last Name: {member.LastName}, Address: {member.Address}");
+            Console.WriteLine($"Member ID: {member.MemberId}, First Name: {member.FirstName}, Last Name: {member.LastName}, Address Line 1: {member.AddressLine1}, City: {member.City}, State: {member.State}, ZIP: {member.ZIP}");
         }
 
         // Print organization details
         Console.WriteLine("\nOrganizations:");
         foreach (var organization in organizations)
         {
-            Console.WriteLine($"Member ID: {organization.MemberId}, First Name: {organization.FirstName}, Last Name: {organization.LastName}, Organization Name: {organization.OrganizationName}, Organization ID: {organization.OrganizationId}, Address: {organization.Address}");
+            Console.WriteLine($"Member ID: {organization.MemberId}, First Name: {organization.FirstName}, Last Name: {organization.LastName}, Organization Name: {organization.OrganizationName}, Organization ID: {organization.OrganizationId}, Address Line 1: {organization.AddressLine1}, City: {organization.City}, State: {organization.State}, ZIP: {organization.ZIP}");
         }
 
         // Print INS details
@@ -137,7 +168,10 @@ public class MemberDetail
     public string MemberId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string Address { get; set; }
+    public string AddressLine1 { get; set; }
+    public string City { get; set; }
+    public string State { get; set; }
+    public string ZIP { get; set; }
 }
 
 public class OrganizationDetail
@@ -147,7 +181,10 @@ public class OrganizationDetail
     public string LastName { get; set; }
     public string OrganizationName { get; set; }
     public string OrganizationId { get; set; }
-    public string Address { get; set; }
+    public string AddressLine1 { get; set; }
+    public string City { get; set; }
+    public string State { get; set; }
+    public string ZIP { get; set; }
 }
 
 public class InsDetail
