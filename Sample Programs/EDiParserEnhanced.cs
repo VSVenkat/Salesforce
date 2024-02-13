@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using EdiFabric.Framework;
-using EdiFabric.Framework.Readers;
-using EdiFabric.Models.X12;
-using EdiFabric.Templates.X12004010;
+using System.Linq;
+using Indices.Edi;
+using Indices.Edi.Utilities;
 
 class Program
 {
@@ -20,93 +19,84 @@ class Program
         List<DtpDetail> dtpList = new List<DtpDetail>();
         List<DbgDetail> dbgList = new List<DbgDetail>();
 
-        // Create a reader for X12 format (version 4010)
-        using (var stream = File.OpenRead(ediFilePath))
+        // Load the EDI file
+        var ediFile = EdiFile.Load(new FileInfo(ediFilePath), new EdiOptions { ReadAhead = true });
+
+        // Process each transaction in the EDI file
+        foreach (var transaction in ediFile.Transactions)
         {
-            using (var ediReader = new X12Reader(stream, "EdiFabric.Templates.X12"))
+            string memberId = string.Empty;
+            string firstName = string.Empty;
+            string lastName = string.Empty;
+
+            foreach (var segment in transaction.Segments)
             {
-                while (ediReader.Read())
+                // Get segment data elements
+                var elements = segment.Elements;
+
+                switch (segment.Identifier)
                 {
-                    var transaction = ediReader.CurrentTransaction;
-
-                    // Check if the transaction is of type 834
-                    if (transaction is TS834 ts834)
-                    {
-                        // Process segments
-                        foreach (var segment in ts834.AllSegments)
+                    case "NM1":
+                        memberId = elements.ElementAtOrDefault(9)?.Value;
+                        firstName = elements.ElementAtOrDefault(3)?.Value;
+                        lastName = elements.ElementAtOrDefault(4)?.Value;
+                        break;
+                    case "IL":
+                        // Create member detail object and add to collection
+                        members.Add(new MemberDetail
                         {
-                            string memberId = string.Empty;
-                            string firstName = string.Empty;
-                            string lastName = string.Empty;
-
-                            if (segment is NM1 nm1Segment)
-                            {
-                                memberId = nm1Segment.MemberIdentificationNumber;
-                                firstName = nm1Segment.FirstName;
-                                lastName = nm1Segment.LastName;
-                            }
-
-                            switch (segment)
-                            {
-                                case NM1 nm1Segment when nm1Segment.EntityIdentifierCode == "IL":
-                                    // Create member detail object and add to collection
-                                    members.Add(new MemberDetail
-                                    {
-                                        MemberId = memberId,
-                                        FirstName = firstName,
-                                        LastName = lastName,
-                                        Address = nm1Segment.AddressLine
-                                    });
-                                    break;
-                                case NM1 nm1Segment when nm1Segment.EntityIdentifierCode == "Names":
-                                    // Create organization detail object and add to collection
-                                    organizations.Add(new OrganizationDetail
-                                    {
-                                        MemberId = memberId,
-                                        FirstName = firstName,
-                                        LastName = lastName,
-                                        OrganizationName = nm1Segment.OrganizationName,
-                                        OrganizationId = nm1Segment.OrganizationIdentificationNumber,
-                                        Address = nm1Segment.AddressLine
-                                    });
-                                    break;
-                                case INS insSegment:
-                                    // Create INS detail object and add to collection
-                                    insList.Add(new InsDetail
-                                    {
-                                        MemberId = memberId,
-                                        FirstName = firstName,
-                                        LastName = lastName,
-                                        Indicator = insSegment.YesNoConditionOrResponseCode,
-                                        Code = insSegment.YesNoConditionOrResponseCode,
-                                        Description = insSegment.Description
-                                    });
-                                    break;
-                                case DTP dtpSegment:
-                                    // Create DTP detail object and add to collection
-                                    dtpList.Add(new DtpDetail
-                                    {
-                                        MemberId = memberId,
-                                        FirstName = firstName,
-                                        LastName = lastName,
-                                        DateQualifier = dtpSegment.DateQualifier,
-                                        Date = dtpSegment.Date
-                                    });
-                                    break;
-                                case DBG dbgSegment:
-                                    // Create DBG detail object and add to collection
-                                    dbgList.Add(new DbgDetail
-                                    {
-                                        MemberId = memberId,
-                                        FirstName = firstName,
-                                        LastName = lastName,
-                                        Code = dbgSegment.DataElementReferenceNumber,
-                                        Description = dbgSegment.Description
-                                    });
-                                    break;
-                            }
-                        }
-                    }
+                            MemberId = memberId,
+                            FirstName = firstName,
+                            LastName = lastName,
+                            Address = elements.ElementAtOrDefault(6)?.Value
+                        });
+                        break;
+                    case "Names":
+                        // Create organization detail object and add to collection
+                        organizations.Add(new OrganizationDetail
+                        {
+                            MemberId = memberId,
+                            FirstName = firstName,
+                            LastName = lastName,
+                            OrganizationName = elements.ElementAtOrDefault(3)?.Value,
+                            OrganizationId = elements.ElementAtOrDefault(9)?.Value,
+                            Address = elements.ElementAtOrDefault(6)?.Value
+                        });
+                        break;
+                    case "INS":
+                        // Create INS detail object and add to collection
+                        insList.Add(new InsDetail
+                        {
+                            MemberId = memberId,
+                            FirstName = firstName,
+                            LastName = lastName,
+                            Indicator = elements.ElementAtOrDefault(1)?.Value,
+                            Code = elements.ElementAtOrDefault(2)?.Value,
+                            Description = elements.ElementAtOrDefault(3)?.Value
+                        });
+                        break;
+                    case "DTP":
+                        // Create DTP detail object and add to collection
+                        dtpList.Add(new DtpDetail
+                        {
+                            MemberId = memberId,
+                            FirstName = firstName,
+                            LastName = lastName,
+                            DateQualifier = elements.ElementAtOrDefault(1)?.Value,
+                            Date = elements.ElementAtOrDefault(2)?.Value
+                        });
+                        break;
+                    case "DBG":
+                        // Create DBG detail object and add to collection
+                        dbgList.Add(new DbgDetail
+                        {
+                            MemberId = memberId,
+                            FirstName = firstName,
+                            LastName = lastName,
+                            Code = elements.ElementAtOrDefault(0)?.Value,
+                            Description = elements.ElementAtOrDefault(1)?.Value
+                        });
+                        break;
                 }
             }
         }
