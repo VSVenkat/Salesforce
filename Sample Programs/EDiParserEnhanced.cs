@@ -191,4 +191,6 @@ public class DbgDetail
     public string MemberId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string Code { get
+    public string Code { get; set; }
+    public string Description { get; set; }
+}
