@@ -1,0 +1,16 @@
+{
+  "queries": [
+    {
+      "name": "Query 1",
+      "sql": "SELECT * FROM Table1 WHERE Condition1;"
+    },
+    {
+      "name": "Query 2",
+      "sql": "SELECT Column1, Column2 FROM Table2 WHERE Condition2;"
+    },
+    {
+      "name": "Query 3",
+      "sql": "SELECT Column3 FROM Table3 WHERE Condition3;"
+    }
+  ]
+}
