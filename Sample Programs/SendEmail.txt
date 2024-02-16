@@ -1,0 +1,27 @@
+Sub SendEmailWithAttachment()
+    Dim objOutlook As Object
+    Dim objMail As Object
+    Dim htmlReportPath As String
+    
+    ' Path to the HTML report file
+    htmlReportPath = "C:\Path\To\Your\HtmlReport.html" ' Update with the actual path
+    
+    ' Create a new instance of Outlook
+    Set objOutlook = CreateObject("Outlook.Application")
+    
+    ' Create a new email
+    Set objMail = objOutlook.CreateItem(0)
+    
+    ' Configure the email
+    With objMail
+        .Subject = "HTML Report"
+        .Body = "Please find the HTML report attached."
+        .To = "recipient@example.com" ' Update with recipient's email address
+        .Attachments.Add htmlReportPath ' Attach the HTML report file
+        .Send ' Send the email
+    End With
+    
+    ' Release the Outlook objects
+    Set objMail = Nothing
+    Set objOutlook = Nothing
+End Sub
